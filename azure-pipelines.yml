@@ -1,0 +1,34 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+
+- checkout: self
+
+- script: |
+    rm -rf dist
+    mkdir dist
+    cp index.html dist/
+    cp style.css dist/
+    cp script.js dist/
+  displayName: Build Website
+
+- script: |
+    git config --global user.email "thouheedmd1234@gmail.com"
+    git config --global user.name "ThouheedMd"
+  displayName: Configure Git
+
+- script: |
+    set -e
+    cd dist
+    git init
+    git checkout -b gh-pages
+    git add .
+    git commit -m "Deploy website"
+
+    git remote add origin https://ThouheedMd:$(GITHUB_TOKEN)@github.com/ThouheedMd/azure-devops-cicd-project.git
+    git push -f origin gh-pages
+  displayName: Deploy Website
